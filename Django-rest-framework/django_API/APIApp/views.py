@@ -64,6 +64,7 @@ class AuthorUpdateView(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk):
+        #print(request.data)
         author = self.get_author(pk)
         if not author:
             return Response({"error": "Author not found."})
