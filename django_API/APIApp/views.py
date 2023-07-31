@@ -33,36 +33,46 @@ class BookUpdateView(RetrieveUpdateAPIView):
     serializer_class = BookSerializer
 
 
-class BookCreateView(APIView):
+# class AuthorUpdateView(RetrieveUpdateAPIView):
+#     queryset = Author.objects.all()
+#     serializer_class = AuthorSerializer
+
+
+class AuthorCreateView(APIView):
     def post(self, request):
-        serializer = BookSerializer(data=request.data)
+        serializer = AuthorSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Book created successfully."})
+            return Response({"message": "Author created successfully."})
         else:
             return Response(serializer.errors)
 
 
-class BookChangeView(APIView):
-    def get(self, request, pk):
+class AuthorUpdateView(APIView):
+    def get_author(self, pk):
         try:
-            book = Book.objects.get(pk=pk)
-            serializer = BookSerializer(book)
-            return Response(serializer.data)
-        except Book.DoesNotExist:
-            return Response({"error": "Book not found."})
+            return Author.objects.get(pk=pk)
+        except Author.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        author = self.get_author(pk)
+        if not author:
+            return Response({"error": "Author not found."})
+        serializer = AuthorSerializer(author)
+        return Response(serializer.data)
 
     def put(self, request, pk):
-        try:
-            book = Book.objects.get(pk=pk)
-        except Book.DoesNotExist:
-            return Response({"error": "Book not found."})
+        author = self.get_author(pk)
+        if not author:
+            return Response({"error": "Author not found."})
 
-        serializer = BookSerializer(book, data=request.data)
+        serializer = AuthorSerializer(author, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Book updated successfully."})
+            return Response({"message": "Author updated successfully."})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

@@ -20,16 +20,6 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = '__all__'
 
-    def create(self, validated_data):
-        return Book.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.genre = validated_data.get('genre', instance.genre)
-        instance.author = validated_data.get('author', instance.author)
-        instance.save()
-        return instance
-
     def to_representation(self, instance):
         """
         to_representation, to customize the serialized output
@@ -47,11 +37,30 @@ class AuthorSerializer(serializers.ModelSerializer):
     In the AuthorSerializer, the BookSerializer is as a nested serializer using the books field.
     many=True because an author can have multiple books.
     """
-    books = BookSerializer(many=True, read_only=True)
+    books = BookSerializer(many=True)
 
     class Meta:
         model = Author
         fields = ['id', 'name', 'country', 'books']
 
     def create(self, validated_data):
-        return Author.objects.create(**validated_data)
+        books_data = validated_data.pop('books')
+        author_obj = Author.objects.create(**validated_data)
+        for book_data in books_data:
+            Book.objects.create(author=author_obj, **book_data)
+        return author_obj
+
+    def update(self, instance, validated_data):
+        books_data = validated_data.pop('books')
+        prev_books = (instance.books).all()
+        prev_books = list(prev_books)
+        instance.name = validated_data.get('name', instance.name)
+        instance.country = validated_data.get('country', instance.country)
+        instance.save()
+
+        for book_data in books_data:
+            book = prev_books.pop(0)
+            book.title = book_data.get('title', book.title)
+            book.genre = book_data.get('genre', book.genre)
+            book.save()
+        return instance

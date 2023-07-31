@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import UserViewSet, GroupViewSet, BookViewSet, AuthorViewSet, BookCreateView, BookUpdateView, BookChangeView
-
+from .views import *
 
 app_name = 'APIApp'
 
@@ -10,8 +9,8 @@ urlpatterns = [
     path('group/', GroupViewSet.as_view(), name='group'),
     path('book/', BookViewSet.as_view(), name='book'),
     path('author/', AuthorViewSet.as_view(), name='author'),
-    path('book/create/', BookCreateView.as_view(), name='book_create'),
     path('book/update/<int:pk>/', BookUpdateView.as_view(), name='book_update'),
-    path('book/change/<int:pk>/', BookChangeView.as_view(), name='books_change'),
+    path('author/update/<int:pk>/', AuthorUpdateView.as_view(), name='author_update'),
+    path('author/create/', AuthorCreateView.as_view(), name='author_create'),
 ]
 
