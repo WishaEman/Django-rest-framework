@@ -1,0 +1,27 @@
+# Ignore compiled files
+*.class
+*.pyc
+.DS_Store
+
+
+# Ignore IDE-specific files and folders
+.vscode/
+.idea/
+
+# Ignore logs and cache files
+logs/
+cache/
+
+# Ignore sensitive configuration files
+config.ini
+secrets.yml
+
+# Ignore dependencies installed by package managers
+node_modules/
+myenv/
+This is just an example, and you can customize the .gitignore file based on your project's needs. The entries in the .gitignore file will prevent Git from tracking and including the specified files and directories in your version control.
+
+
+
+
+
