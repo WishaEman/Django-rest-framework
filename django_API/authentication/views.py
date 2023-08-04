@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from http import HTTPStatus
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 
 class LoginView(APIView):
@@ -39,7 +40,7 @@ class SignupView(CreateAPIView):
 
 
 class LogoutView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return Response({
